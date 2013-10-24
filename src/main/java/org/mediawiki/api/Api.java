@@ -1,5 +1,9 @@
 package org.mediawiki.api;
 
+import com.github.kevinsawicki.http.HttpRequest;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -10,6 +14,15 @@ import java.net.URL;
  * - Uses JSON for everything
  */
 public class Api {
+
+    /**
+     * Parameter to {@link #makeRequest(int, RequestBuilder)}, performs GET request.
+     */
+    public static final int METHOD_GET = 1;
+    /**
+     * Parameter to {@link #makeRequest(int, RequestBuilder)}, performs POST request.
+     */
+    public static final int METHOD_POST = 2;
 
     /**
      * The exact URL to which API requests are made.
@@ -80,7 +93,38 @@ public class Api {
      * @return A {@link RequestBuilder} instance that can be used to add parameters & execute the request.
      */
     public RequestBuilder action(final String action) {
-        return null;
+        return new RequestBuilder(this, action);
+    }
+
+    /**
+     * Performs the HTTP request from the given requestBuilder, with the given HTTP method.
+     *
+     * Supports GET, POST and HEAD only currently, since that is all that the MW API supports.
+     *
+     * TODO: Figure out how to do error handling (network!)
+     *
+     * @param method HTTP method to use when performing the request
+     * @param requestBuilder The requestBuilder to use to construct the request
+     * @return A JSONObject with the response from the server
+     */
+    public JSONObject makeRequest(final int method, final RequestBuilder requestBuilder) {
+        HttpRequest request;
+        switch(method) {
+            case METHOD_GET:
+                request = HttpRequest.get(getApiUrl().toString(), requestBuilder.getParams(), true);
+                break;
+            case METHOD_POST:
+                request = HttpRequest.post(getApiUrl().toString(), requestBuilder.getParams(), true);
+                break;
+            default:
+                throw new IllegalArgumentException("Unkown argument passed for parameter method");
+        }
+        try {
+            return new JSONObject(request.body());
+        } catch (JSONException e) {
+            // Well, if the request *does* complete successfully but the
+            throw new RuntimeException(e);
+        }
     }
 }
 

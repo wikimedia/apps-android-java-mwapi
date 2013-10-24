@@ -2,17 +2,40 @@ package org.mediawiki.api;
 
 import org.json.JSONObject;
 
+import java.util.HashMap;
+
 /**
  * Fluent interface to easily build up an API request from params.
  */
 public class RequestBuilder {
     /**
+     * Hashmap used to hold the parameters with which to make the API call.
+     */
+    private final HashMap<String, String> params;
+
+    /**
+     * Api object with which the request being built is associated.
+     */
+    private final Api api;
+
+    /**
      * Create a new RequestBuilder to build API requests.
      *
-     * @param api The Api that will be used to perform the request.
+     * @param apiToUse The Api that will be used to perform the request.
      * @param action The action this API query is for
      */
-    RequestBuilder(final Api api, final String action) {
+    RequestBuilder(final Api apiToUse, final String action) {
+        this.api = apiToUse;
+        params = new HashMap<String, String>();
+        params.put("format", "json"); // Force everything to be JSON
+        params.put("action", action);
+    }
+
+    /**
+     * @return A copy of the curent set of parameters for this request
+     */
+    public HashMap<String, String> getParams() {
+        return new HashMap<String, String>(params);
     }
 
     /**
@@ -23,7 +46,8 @@ public class RequestBuilder {
      * @return The `this` object, so you can chain params together
      */
     public RequestBuilder param(final String key, final String value) {
-        return null;
+        params.put(key, value);
+        return this;
     }
 
     /**
@@ -32,8 +56,8 @@ public class RequestBuilder {
      * @param method HTTP Method to use when performing the request
      * @return The result of the API request
      */
-    private JSONObject makeRequest(final String method) {
-        return null;
+    private JSONObject makeRequest(final int method) {
+        return api.makeRequest(method, this);
     }
 
     /**
@@ -42,7 +66,7 @@ public class RequestBuilder {
      * @return The result of the API request
      */
     public JSONObject get() {
-        return null;
+        return makeRequest(Api.METHOD_GET);
     }
 
     /**
@@ -51,6 +75,6 @@ public class RequestBuilder {
      * @return The result of the API request
      */
     public JSONObject post() {
-        return null;
+        return makeRequest(Api.METHOD_POST);
     }
 }

@@ -7,7 +7,7 @@ import org.junit.Test;
 /**
  * Tests for different ways to construct the Api object.
  */
-public class ApiConstructionTests {
+public class ApiConstructionTest {
 
     @Test
     public void testSecure() throws Exception {

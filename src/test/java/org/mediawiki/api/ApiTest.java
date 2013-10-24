@@ -8,7 +8,7 @@ import org.junit.*;
 /**
  * Tests that actually hit the API to return something.
  */
-public class ApiTests {
+public class ApiTest {
 
     @Test
     public void testBasicPost() {

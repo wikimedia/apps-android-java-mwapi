@@ -47,4 +47,10 @@ public class ApiTest {
                 .get();
         assertEquals(resp.optJSONObject("parse").optJSONObject("wikitext").optString("*"), inputText);
     }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testInvalidMethod() {
+        Api api = new Api("test.wikipedia.org");
+        api.makeRequest(404, null);
+    }
 }

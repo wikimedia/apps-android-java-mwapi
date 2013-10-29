@@ -105,9 +105,10 @@ public class Api {
      *
      * @param method HTTP method to use when performing the request
      * @param requestBuilder The requestBuilder to use to construct the request
+     * @throws ApiException In case of NetworkError or JSON parsing error
      * @return A JSONObject with the response from the server
      */
-    public JSONObject makeRequest(final int method, final RequestBuilder requestBuilder) {
+    public JSONObject makeRequest(final int method, final RequestBuilder requestBuilder) throws ApiException {
         HttpRequest request;
         switch(method) {
             case METHOD_GET:
@@ -122,8 +123,7 @@ public class Api {
         try {
             return new JSONObject(request.body());
         } catch (JSONException e) {
-            // Well, if the request *does* complete successfully but the
-            throw new RuntimeException(e);
+            throw new ApiException(e);
         }
     }
 }

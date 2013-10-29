@@ -54,27 +54,30 @@ public class RequestBuilder {
      * Performs the request that has been built up so far and returns the JSON Object.
      *
      * @param method HTTP Method to use when performing the request
+     * @throws ApiException In case of NetworkError or JSON parsing error
      * @return The result of the API request
      */
-    private JSONObject makeRequest(final int method) {
+    private JSONObject makeRequest(final int method) throws ApiException {
         return api.makeRequest(method, this);
     }
 
     /**
      * Performs a GET request using the parameters so far specified.
      *
+     * @throws ApiException In case of NetworkError or JSON parsing error
      * @return The result of the API request
      */
-    public JSONObject get() {
+    public JSONObject get() throws ApiException {
         return makeRequest(Api.METHOD_GET);
     }
 
     /**
      * Performs a POST request using the parameters so far specified.
      *
+     * @throws ApiException In case of NetworkError or JSON parsing error
      * @return The result of the API request
      */
-    public JSONObject post() {
+    public JSONObject post() throws ApiException {
         return makeRequest(Api.METHOD_POST);
     }
 }

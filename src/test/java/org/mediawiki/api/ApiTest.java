@@ -2,6 +2,7 @@ package org.mediawiki.api;
 
 import static org.junit.Assert.*;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.*;
 
@@ -11,7 +12,7 @@ import org.junit.*;
 public class ApiTest {
 
     @Test
-    public void testBasicPost() {
+    public void testBasicPost() throws Exception {
         Api api = new Api("test.wikipedia.org");
         // We're just checking if the POST goes through, so does not
         // matter which username password we use
@@ -27,7 +28,7 @@ public class ApiTest {
     }
 
     @Test
-    public void testWrongMethod() {
+    public void testWrongMethod() throws Exception {
         Api api = new Api("test.wikipedia.org");
         JSONObject resp = api.action("login")
                 .get();
@@ -49,8 +50,28 @@ public class ApiTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testInvalidMethod() {
+    public void testInvalidMethod() throws Exception {
         Api api = new Api("test.wikipedia.org");
         api.makeRequest(404, null);
+    }
+
+    /**
+     * This tests for responses that aren't JSON, but something else.
+     *
+     * Usually this happens when a backend apache times out and we get the
+     * timeout HTML page from the frontend caches. Since that is not
+     * reliably reproducible, and we aren't using network mocks, I can
+     * simulate it by simply requesting for the XML format.
+     */
+    @Test
+    public void testJSONException() {
+        Api api = new Api("test.wikipedia.org");
+        try {
+            api.action("somethingdoesnmtatter").param("format", "xml").get();
+        } catch (ApiException e) {
+            assertTrue(e.getCause() instanceof JSONException);
+            return;
+        }
+        assertTrue("This means no exception was thrown, and hence test fails", false);
     }
 }

@@ -6,6 +6,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.*;
 
+import java.io.IOException;
+
 /**
  * Tests that actually hit the API to return something.
  */
@@ -74,4 +76,24 @@ public class ApiTest {
         }
         assertTrue("This means no exception was thrown, and hence test fails", false);
     }
+
+    /**
+     * Test for Network failure throwing the proper exception.
+     *
+     * Usually this happens due to various network failures, but since we can not
+     * reproduce that reliably without network mocks, I am simply calling into a
+     * random hopefully nonexistant hostname to get the network failure.
+     */
+    @Test
+    public void testNetworkException() {
+        Api api = new Api("blashblahblahdoesnotexist");
+        try {
+            api.action("somethingdoesnmtatter").param("format", "xml").get();
+        } catch (ApiException e) {
+            assertTrue(e.getCause() instanceof IOException);
+            return;
+        }
+        assertTrue("This means no exception was thrown, and hence test fails", false);
+    }
+
 }

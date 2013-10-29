@@ -124,6 +124,8 @@ public class Api {
             return new JSONObject(request.body());
         } catch (JSONException e) {
             throw new ApiException(e);
+        } catch (HttpRequest.HttpRequestException e) {
+            throw new ApiException(e.getCause());
         }
     }
 }

@@ -6,4 +6,4 @@
  *
  * @author Yuvi Panda
  */
-package org.mediawiki.api;
+package org.mediawiki.api.json;

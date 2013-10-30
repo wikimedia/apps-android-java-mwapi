@@ -1,4 +1,4 @@
-package org.mediawiki.api;
+package org.mediawiki.api.json;
 
 import com.github.kevinsawicki.http.HttpRequest;
 import org.json.JSONException;
@@ -33,7 +33,7 @@ public class Api {
      * Create an Api class with the default endpoint path.
      *
      * Uses https by default (isSecure is true).
-     * Default endpoint path is /w/api.php.
+     * Default endpoint path is /w/json.php.
      *
      * @param domain Domain name of the server with the wiki to connect to
      */
@@ -56,7 +56,7 @@ public class Api {
      *
      * @param domain Domain name of the mediawiki installation to connect to
      * @param useSecure true to use https, false to use http
-     * @param endpointPath Path to the api.php file. Require preceding slash.
+     * @param endpointPath Path to the json.php file. Require preceding slash.
      */
     public Api(final String domain, final boolean useSecure, final String endpointPath) {
         String protocol;
@@ -71,7 +71,7 @@ public class Api {
         } catch (MalformedURLException e) {
             // This never actually is supposed to happen, since it is thrown only
             // when an unknown protocal is given. http and https are guaranteed to be present,
-            // according to http://docs.oracle.com/javase/6/docs/api/java/net/URL.html#URL(java.lang.String, java.lang.String, int, java.lang.String)
+            // according to http://docs.oracle.com/javase/6/docs/json/java/net/URL.html#URL(java.lang.String, java.lang.String, int, java.lang.String)
             throw new RuntimeException(e);
         }
     }

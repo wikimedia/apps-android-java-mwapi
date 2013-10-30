@@ -1,4 +1,4 @@
-package org.mediawiki.api;
+package org.mediawiki.api.json;
 
 import org.json.JSONException;
 

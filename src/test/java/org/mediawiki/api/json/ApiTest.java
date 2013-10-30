@@ -1,4 +1,4 @@
-package org.mediawiki.api;
+package org.mediawiki.api.json;
 
 import static org.junit.Assert.*;
 

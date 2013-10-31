@@ -1,7 +1,5 @@
 package org.mediawiki.api.json;
 
-import org.json.JSONObject;
-
 import java.util.HashMap;
 
 /**
@@ -51,33 +49,38 @@ public class RequestBuilder {
     }
 
     /**
-     * Performs the request that has been built up so far and returns the JSON Object.
+     * Sets up the request that has been constructed so far.
+     *
+     * Use {@link org.mediawiki.api.json.ApiResult#asArray()} or {@link org.mediawiki.api.json.ApiResult#asObject()} to
+     * actually start the network request and get the response.
      *
      * @param method HTTP Method to use when performing the request
-     * @throws ApiException In case of NetworkError or JSON parsing error
-     * @return The result of the API request
+     * @return An {@link ApiResult} object which can be used to get the result of this query.
      */
-    private JSONObject makeRequest(final int method) throws ApiException {
-        return api.makeRequest(method, this);
+    private ApiResult setupRequest(final int method) {
+        return api.setupRequest(method, this);
     }
 
     /**
-     * Performs a GET request using the parameters so far specified.
+     * Sets up a GET request using the parameters so far specified.
+     * Use {@link org.mediawiki.api.json.ApiResult#asArray()} or {@link org.mediawiki.api.json.ApiResult#asObject()} to
+     * actually start the network request and get the response.
      *
-     * @throws ApiException In case of NetworkError or JSON parsing error
-     * @return The result of the API request
+     * @return An {@link ApiResult} object which can be used to get the result of this query.
      */
-    public JSONObject get() throws ApiException {
-        return makeRequest(Api.METHOD_GET);
+    public ApiResult get() {
+        return setupRequest(Api.METHOD_GET);
     }
 
     /**
-     * Performs a POST request using the parameters so far specified.
+     * Sets up a POST request using the parameters so far specified.
      *
-     * @throws ApiException In case of NetworkError or JSON parsing error
-     * @return The result of the API request
+     * Use {@link org.mediawiki.api.json.ApiResult#asArray()} or {@link org.mediawiki.api.json.ApiResult#asObject()} to
+     * actually start the network request and get the response.
+     *
+     * @return An {@link ApiResult} object which can be used to get the result of this query.
      */
-    public JSONObject post() throws ApiException {
-        return makeRequest(Api.METHOD_POST);
+    public ApiResult post() {
+        return setupRequest(Api.METHOD_POST);
     }
 }

@@ -1,8 +1,6 @@
 package org.mediawiki.api.json;
 
 import com.github.kevinsawicki.http.HttpRequest;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -97,18 +95,18 @@ public class Api {
     }
 
     /**
-     * Performs the HTTP request from the given requestBuilder, with the given HTTP method.
+     * Sets up the HTTP request that needs to be made to produce results for this API query.
      *
-     * Supports GET, POST and HEAD only currently, since that is all that the MW API supports.
+     * Use {@link org.mediawiki.api.json.ApiResult#asArray()} or {@link org.mediawiki.api.json.ApiResult#asObject()} to
+     * actually start the network request and get the response.
      *
-     * TODO: Figure out how to do error handling (network!)
+     * Supports GET and POST only currently, since that is all that the MW API supports.
      *
      * @param method HTTP method to use when performing the request
      * @param requestBuilder The requestBuilder to use to construct the request
-     * @throws ApiException In case of NetworkError or JSON parsing error
-     * @return A JSONObject with the response from the server
+     * @return An {@link ApiResult} object which can be used to get the result of this query.
      */
-    public JSONObject makeRequest(final int method, final RequestBuilder requestBuilder) throws ApiException {
+    public ApiResult setupRequest(final int method, final RequestBuilder requestBuilder) {
         HttpRequest request;
         switch(method) {
             case METHOD_GET:
@@ -120,13 +118,7 @@ public class Api {
             default:
                 throw new IllegalArgumentException("Unkown argument passed for parameter method");
         }
-        try {
-            return new JSONObject(request.body());
-        } catch (JSONException e) {
-            throw new ApiException(e);
-        } catch (HttpRequest.HttpRequestException e) {
-            throw new ApiException(e.getCause());
-        }
+        return new ApiResult(request);
     }
 }
 

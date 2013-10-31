@@ -24,7 +24,7 @@ public class ApiTest {
         JSONObject resp = api.action("login")
                 .param("lgname", testUsername)
                 .param("lgpassword", testPassword)
-                .post();
+                .post().asObject();
         assertEquals(resp.optJSONObject("login").optString("result"), "NeedToken");
         assertNull(resp.optJSONObject("error"));
     }
@@ -33,7 +33,7 @@ public class ApiTest {
     public void testWrongMethod() throws Exception {
         Api api = new Api("test.wikipedia.org");
         JSONObject resp = api.action("login")
-                .get();
+                .get().asObject();
 
         assertEquals(resp.optJSONObject("error").optString("code"), "mustbeposted");
     }
@@ -47,14 +47,14 @@ public class ApiTest {
                 .param("title", inputTitle)
                 .param("text", inputText)
                 .param("prop", "wikitext")
-                .get();
+                .get().asObject();
         assertEquals(resp.optJSONObject("parse").optJSONObject("wikitext").optString("*"), inputText);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testInvalidMethod() throws Exception {
         Api api = new Api("test.wikipedia.org");
-        api.makeRequest(404, null);
+        api.setupRequest(404, null);
     }
 
     /**
@@ -69,7 +69,7 @@ public class ApiTest {
     public void testJSONException() {
         Api api = new Api("test.wikipedia.org");
         try {
-            api.action("somethingdoesnmtatter").param("format", "xml").get();
+            api.action("somethingdoesnmtatter").param("format", "xml").get().asObject();
         } catch (ApiException e) {
             assertTrue(e.getCause() instanceof JSONException);
             return;
@@ -88,7 +88,7 @@ public class ApiTest {
     public void testNetworkException() {
         Api api = new Api("blashblahblahdoesnotexist");
         try {
-            api.action("somethingdoesnmtatter").param("format", "xml").get();
+            api.action("somethingdoesnmtatter").param("format", "xml").get().asObject();
         } catch (ApiException e) {
             assertTrue(e.getCause() instanceof IOException);
             return;

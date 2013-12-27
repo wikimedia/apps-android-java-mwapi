@@ -33,8 +33,10 @@ public class ApiResult {
         request.disconnect();
     }
 
+    private JSONArray resultArray;
     /**
      * Start the network request & return the response as a JSON Array.
+     * Locally cache the result too, so multiple calls to this method will succeeed.
      *
      * Use this when a JSON Array is returned by the API. So far, only action=opensearch.
      *
@@ -43,7 +45,10 @@ public class ApiResult {
      */
     public JSONArray asArray() throws ApiException {
         try {
-            return new JSONArray(request.body());
+            if (resultArray == null) {
+                resultArray = new JSONArray(request.body());
+            }
+            return resultArray;
         } catch (JSONException e) {
             throw new ApiException(e);
         } catch (HttpRequest.HttpRequestException e) {
@@ -51,16 +56,20 @@ public class ApiResult {
         }
     }
 
+    private JSONObject resultObject;
     /**
      * Start the network request & return the response as a JSON Object.
-     *
+     * Locally cache the result too, so multiple calls to this method will succeeed.
      *
      * @return A {@link JSONObject} object with the results of the API query.
      * @throws ApiException Thrown in the case of a network error, or if the response is not a JSON Object.
      */
     public JSONObject asObject() throws ApiException {
         try {
-            return new JSONObject(request.body());
+            if (resultObject == null) {
+                resultObject = new JSONObject(request.body());
+            }
+            return resultObject;
         } catch (JSONException e) {
             throw new ApiException(e);
         } catch (HttpRequest.HttpRequestException e) {

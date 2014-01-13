@@ -120,5 +120,15 @@ public class Api {
         }
         return new ApiResult(request);
     }
+
+    /**
+     * Set the connection factory used to construct connections.
+     *
+     * @param factory The factory used to construct HTTP connections
+     */
+    public static void setConnectionFactory(HttpRequest.ConnectionFactory factory) {
+        HttpRequest.setConnectionFactory(factory);
+    }
+
 }
 

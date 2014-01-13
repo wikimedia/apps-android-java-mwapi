@@ -113,7 +113,7 @@ public class Api {
                 request = HttpRequest.get(getApiUrl().toString(), requestBuilder.getParams(), true);
                 break;
             case METHOD_POST:
-                request = HttpRequest.post(getApiUrl().toString(), requestBuilder.getParams(), true);
+                request = HttpRequest.post(getApiUrl().toString()).form(requestBuilder.getParams());
                 break;
             default:
                 throw new IllegalArgumentException("Unkown argument passed for parameter method");

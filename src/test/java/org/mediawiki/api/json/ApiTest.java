@@ -2,6 +2,8 @@ package org.mediawiki.api.json;
 
 import static org.junit.Assert.*;
 
+import java.util.Map;
+import java.util.List;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.*;
@@ -94,6 +96,47 @@ public class ApiTest {
             return;
         }
         assertTrue("This means no exception was thrown, and hence test fails", false);
+    }
+
+    /**
+     * Test to verify that headers are properly received.
+     *
+     * Verifies that headers were received in the response to a well formed request.
+     * Note that the result object needs to be acquired so that headers can be pulled down,
+     * hence the ordering here.
+     */
+    @Test
+    public void testGetHeaders() throws Exception {
+        Api api = new Api("test.wikipedia.org");
+        String inputText = "Test String";
+        String inputTitle = "Test Title";
+        ApiResult result = api.action("parse")
+                .param("title", inputTitle)
+                .param("text", inputText)
+                .param("prop", "wikitext")
+                .get();
+        JSONObject jsonObject = result.asObject();
+        Map<String, List<String>> m = result.getHeaders();
+        assertNotNull(m);
+        assertFalse(m.isEmpty());
+        assertTrue(m.containsKey("Content-Type"));
+    }
+
+    /**
+     * Test to verify that accessing headers before asObject throws.
+    */
+    @Test(expected=NullPointerException.class)
+    public void testGetHeadersOutOfOrder() throws Exception {
+        boolean exceptionWasCaught = false;
+        Api api = new Api("test.wikipedia.org");
+        String inputText = "Test String";
+        String inputTitle = "Test Title";
+        ApiResult result = api.action("parse")
+                .param("title", inputTitle)
+                .param("text", inputText)
+                .param("prop", "wikitext")
+                .get();
+        Map<String, List<String>> m = result.getHeaders();
     }
 
 }

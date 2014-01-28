@@ -5,6 +5,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Map;
+import java.util.List;
+
 /**
  * Encapsulates the result of performing an API call.
  *
@@ -16,6 +19,7 @@ public class ApiResult {
      * Request for which this object holds the results.
      */
     private final HttpRequest request;
+    private Map<String, List<String>> headers;
 
     /**
      * Create an APIResult object corresponding to this request object.
@@ -46,6 +50,7 @@ public class ApiResult {
     public JSONArray asArray() throws ApiException {
         try {
             if (resultArray == null) {
+                extractResponseHeaders();
                 resultArray = new JSONArray(request.body());
             }
             return resultArray;
@@ -67,6 +72,7 @@ public class ApiResult {
     public JSONObject asObject() throws ApiException {
         try {
             if (resultObject == null) {
+                extractResponseHeaders();
                 resultObject = new JSONObject(request.body());
             }
             return resultObject;
@@ -75,5 +81,27 @@ public class ApiResult {
         } catch (HttpRequest.HttpRequestException e) {
             throw new ApiException(e.getCause());
         }
+    }
+
+    private void extractResponseHeaders() {
+        try {
+            headers = request.headers();
+        } catch (HttpRequest.HttpRequestException e) {
+            throw e;
+        }
+
+    }
+
+    /**
+     * Get the Map of headers returned for the response. Note that this must be called after asArray or asObject.
+     *
+     * @return Map<String, List<String>>
+     * @throws NullPointerException
+     */
+    public Map<String, List<String>> getHeaders() throws NullPointerException {
+        if (headers != null) {
+                return headers;
+        }
+        throw new NullPointerException("getHeaders must be called after asArray or asObject");
     }
 }

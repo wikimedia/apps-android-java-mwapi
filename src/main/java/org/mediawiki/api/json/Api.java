@@ -28,6 +28,11 @@ public class Api {
     private URL apiUrl;
 
     /**
+     * The custom User-Agent, if one is specified by the appropriate constructor.
+     */
+    private String userAgent;
+
+    /**
      * Create an Api class with the default endpoint path.
      *
      * Uses https by default (isSecure is true).
@@ -37,6 +42,22 @@ public class Api {
      */
     public Api(final String domain) {
         this(domain, true);
+    }
+
+    /**
+     * Create an Api class with the default endpoint path using custom User-Agent.
+     *
+     * Uses https by default (isSecure is true).
+     * Default endpoint path is /w/json.php.
+     *
+     * @param domain Domain name of the server with the wiki to connect to
+     * @param userAgent Custom User-Agent to simplify identification of consuming application
+     */
+    public Api(final String domain, final String userAgent) {
+        this(domain, true);
+        if (userAgent != null) {
+            this.userAgent = userAgent;
+        }
     }
 
     /**
@@ -111,9 +132,16 @@ public class Api {
         switch(method) {
             case METHOD_GET:
                 request = HttpRequest.get(getApiUrl().toString(), requestBuilder.getParams(), true);
+                if (this.userAgent != null) {
+                    request = request.header("User-Agent", this.userAgent);
+                }
                 break;
             case METHOD_POST:
-                request = HttpRequest.post(getApiUrl().toString()).form(requestBuilder.getParams());
+                request = HttpRequest.post(getApiUrl().toString());
+                if (this.userAgent != null) {
+                    request = request.header("User-Agent", this.userAgent);
+                }
+                request.form(requestBuilder.getParams());
                 break;
             default:
                 throw new IllegalArgumentException("Unkown argument passed for parameter method");

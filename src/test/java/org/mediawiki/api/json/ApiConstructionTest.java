@@ -27,6 +27,10 @@ public class ApiConstructionTest {
                 "https://test.wikipedia.org/api.php"
         );
         assertEquals(
+                new Api("test.wikipedia.org", "java-mwapi-UA").getApiUrl().toString(),
+                "https://test.wikipedia.org/w/api.php"
+        );
+        assertEquals(
                 new Api("test.wikipedia.org", false, "/api.php").getApiUrl().toString(),
                 "http://test.wikipedia.org/api.php"
         );

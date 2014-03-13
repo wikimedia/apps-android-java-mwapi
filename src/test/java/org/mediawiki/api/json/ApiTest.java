@@ -17,7 +17,7 @@ public class ApiTest {
 
     @Test
     public void testBasicPost() throws Exception {
-        Api api = new Api("test.wikipedia.org");
+        Api api = new Api("test.wikipedia.org", "java-mwapi-UA");
         // We're just checking if the POST goes through, so does not
         // matter which username password we use
         String testUsername = "doesntmatter";
@@ -33,7 +33,7 @@ public class ApiTest {
 
     @Test
     public void testWrongMethod() throws Exception {
-        Api api = new Api("test.wikipedia.org");
+        Api api = new Api("test.wikipedia.org", "java-mwapi-UA");
         JSONObject resp = api.action("login")
                 .get().asObject();
 
@@ -42,7 +42,7 @@ public class ApiTest {
 
     @Test
     public void testBasicGet() throws Exception {
-        Api api = new Api("test.wikipedia.org");
+        Api api = new Api("test.wikipedia.org", "java-mwapi-UA");
         String inputText = "Test String";
         String inputTitle = "Test Title";
         JSONObject resp = api.action("parse")
@@ -55,7 +55,7 @@ public class ApiTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testInvalidMethod() throws Exception {
-        Api api = new Api("test.wikipedia.org");
+        Api api = new Api("test.wikipedia.org", "java-mwapi-UA");
         api.setupRequest(404, null);
     }
 
@@ -69,7 +69,7 @@ public class ApiTest {
      */
     @Test
     public void testJSONException() {
-        Api api = new Api("test.wikipedia.org");
+        Api api = new Api("test.wikipedia.org", "java-mwapi-UA");
         try {
             api.action("somethingdoesnmtatter").param("format", "xml").get().asObject();
         } catch (ApiException e) {
@@ -88,7 +88,7 @@ public class ApiTest {
      */
     @Test
     public void testNetworkException() {
-        Api api = new Api("blashblahblahdoesnotexist");
+        Api api = new Api("blashblahblahdoesnotexist", "java-mwapi-UA");
         try {
             api.action("somethingdoesnmtatter").param("format", "xml").get().asObject();
         } catch (ApiException e) {
@@ -107,7 +107,7 @@ public class ApiTest {
      */
     @Test
     public void testGetHeaders() throws Exception {
-        Api api = new Api("test.wikipedia.org");
+        Api api = new Api("test.wikipedia.org", "java-mwapi-UA");
         String inputText = "Test String";
         String inputTitle = "Test Title";
         ApiResult result = api.action("parse")
@@ -128,7 +128,7 @@ public class ApiTest {
     @Test(expected=NullPointerException.class)
     public void testGetHeadersOutOfOrder() throws Exception {
         boolean exceptionWasCaught = false;
-        Api api = new Api("test.wikipedia.org");
+        Api api = new Api("test.wikipedia.org", "java-mwapi-UA");
         String inputText = "Test String";
         String inputTitle = "Test Title";
         ApiResult result = api.action("parse")

@@ -4,6 +4,7 @@ import com.github.kevinsawicki.http.HttpRequest;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.HashMap;
 
 /**
  * Client wrapper for connecting to a MediaWiki installation's API.
@@ -28,9 +29,9 @@ public class Api {
     private URL apiUrl;
 
     /**
-     * The custom User-Agent, if one is specified by the appropriate constructor.
+     * Any custom headers, if specified by the appropriate constructor
      */
-    private String userAgent;
+    private HashMap<String,String> customHeaders;
 
     /**
      * Create an Api class with the default endpoint path.
@@ -56,7 +57,47 @@ public class Api {
     public Api(final String domain, final String userAgent) {
         this(domain, true);
         if (userAgent != null) {
-            this.userAgent = userAgent;
+            this.customHeaders = new HashMap<String,String>();
+            this.customHeaders.put("User-Agent", userAgent);
+        }
+    }
+
+    /**
+     * Create an Api class with the default endpoint path using custom User-Agent
+     * and additional headers.
+     *
+     * Uses https by default (isSecure is true).
+     * Default endpoint path is /w/json.php.
+     * If User-Agent key is set in customHeaders it will override the userAgent parameter.
+     *
+     * @param domain Domain name of the server with the wiki to connect to
+     * @param userAgent Custom User-Agent to simplify identification of consuming application
+     * @param customHeaders Additional custom headers to enrich request
+     */
+    public Api(final String domain, final String userAgent, HashMap<String,String> customHeaders) {
+        this(domain, userAgent);
+        if (customHeaders != null) {
+            if (this.customHeaders == null) {
+                this.customHeaders = customHeaders;
+            } else {
+                this.customHeaders.putAll(customHeaders);
+            }
+        }
+    }
+
+    /**
+     * Create an Api class with the default endpoint path using custom headers.
+     *
+     * Uses https by default (isSecure is true).
+     * Default endpoint path is /w/json.php.
+     *
+     * @param domain Domain name of the server with the wiki to connect to
+     * @param customHeaders Additional custom headers to enrich request
+     */
+    public Api(final String domain, HashMap<String,String> customHeaders) {
+        this(domain, true);
+        if (customHeaders != null) {
+            this.customHeaders = customHeaders;
         }
     }
 
@@ -132,14 +173,14 @@ public class Api {
         switch(method) {
             case METHOD_GET:
                 request = HttpRequest.get(getApiUrl().toString(), requestBuilder.getParams(), true);
-                if (this.userAgent != null) {
-                    request = request.header("User-Agent", this.userAgent);
+                if (this.customHeaders != null) {
+                    request = request.headers(customHeaders);
                 }
                 break;
             case METHOD_POST:
                 request = HttpRequest.post(getApiUrl().toString());
-                if (this.userAgent != null) {
-                    request = request.header("User-Agent", this.userAgent);
+                if (this.customHeaders != null) {
+                    request = request.headers(customHeaders);
                 }
                 request.form(requestBuilder.getParams());
                 break;

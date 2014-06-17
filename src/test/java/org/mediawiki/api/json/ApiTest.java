@@ -54,6 +54,25 @@ public class ApiTest {
         assertEquals(resp.optJSONObject("parse").optJSONObject("wikitext").optString("*"), inputText);
     }
 
+    /**
+     * Test to verify that parameter values with and ampersand get encoded properly.
+     * Inspired by https://bugzilla.wikimedia.org/show_bug.cgi?id=66152
+     */
+    @Test
+    public void testGetWithAmpersand() throws Exception {
+        Api api = getApi();
+        JSONObject resp = api.action("mobileview")
+                .param("page", "Ampersand_&_title")
+                .param("prop", "text|sections")
+                .param("onlyrequestedsections", "1")
+                .param("sections", "0")
+                .param("sectionprop", "toclevel|line|anchor")
+                .param("noheadings", "true")
+                .get().asObject();
+        assertEquals(resp.optJSONObject("mobileview").optJSONArray("sections").getJSONObject(0).optString("text"),
+                "<p>Testing a page with &amp; in the title</p>");
+    }
+
     @Test(expected = IllegalArgumentException.class)
     public void testInvalidMethod() throws Exception {
         Api api = getApi();
@@ -125,10 +144,9 @@ public class ApiTest {
 
     /**
      * Test to verify that accessing headers before asObject throws.
-    */
+     */
     @Test(expected=NullPointerException.class)
     public void testGetHeadersOutOfOrder() throws Exception {
-        boolean exceptionWasCaught = false;
         Api api = getApi();
         String inputText = "Test String";
         String inputTitle = "Test Title";
@@ -147,7 +165,6 @@ public class ApiTest {
     public Api getApi() {
         HashMap<String,String> getApi = new HashMap<String,String>();
         getApi.put("X-Java-Mwapi-UnitTest", "java-mwapi-UA");
-        Api api = new Api("test.wikipedia.org", "java-mwapi-UA", getApi);
-        return api;
+        return new Api("test.wikipedia.org", "java-mwapi-UA", getApi);
     }
 }

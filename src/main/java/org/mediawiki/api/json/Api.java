@@ -2,9 +2,12 @@ package org.mediawiki.api.json;
 
 import com.github.kevinsawicki.http.HttpRequest;
 
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Client wrapper for connecting to a MediaWiki installation's API.
@@ -15,11 +18,11 @@ import java.util.HashMap;
 public class Api {
 
     /**
-     * Parameter to {@link #makeRequest(int, RequestBuilder)}, performs GET request.
+     * Parameter to {@link #setupRequest(int, RequestBuilder)}, performs GET request.
      */
     public static final int METHOD_GET = 1;
     /**
-     * Parameter to {@link #makeRequest(int, RequestBuilder)}, performs POST request.
+     * Parameter to {@link #setupRequest(int, RequestBuilder)}, performs POST request.
      */
     public static final int METHOD_POST = 2;
 
@@ -172,7 +175,7 @@ public class Api {
         HttpRequest request;
         switch(method) {
             case METHOD_GET:
-                request = HttpRequest.get(getApiUrl().toString(), requestBuilder.getParams(), true);
+                request = HttpRequest.get(getApiUrl().toString(), encodeParams(requestBuilder.getParams()), false);
                 if (this.customHeaders != null) {
                     request = request.headers(customHeaders);
                 }
@@ -185,9 +188,20 @@ public class Api {
                 request.form(requestBuilder.getParams());
                 break;
             default:
-                throw new IllegalArgumentException("Unkown argument passed for parameter method");
+                throw new IllegalArgumentException("Unknown argument passed for parameter method");
         }
         return new ApiResult(request);
+    }
+
+    private HashMap<String, String> encodeParams(HashMap<String, String> params) {
+        for (Map.Entry<String, String> entry: params.entrySet()) {
+            try {
+                entry.setValue(URLEncoder.encode(entry.getValue(), "utf-8"));
+            } catch (UnsupportedEncodingException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return params;
     }
 
     /**
@@ -198,6 +212,5 @@ public class Api {
     public static void setConnectionFactory(HttpRequest.ConnectionFactory factory) {
         HttpRequest.setConnectionFactory(factory);
     }
-
 }
 

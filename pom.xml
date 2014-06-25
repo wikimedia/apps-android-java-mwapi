@@ -54,4 +54,14 @@
             </plugin>
         </plugins>
     </build>
+
+    <!-- deploy to repo on local file system then transfer to tools -->
+    <distributionManagement>
+        <repository>
+            <id>tools.repo</id>
+            <name>Tools Deploy Repo</name>
+            <url>file://${user.home}/maven-repo</url>
+        </repository>
+    </distributionManagement>
+
 </project>

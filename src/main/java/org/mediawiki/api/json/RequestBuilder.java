@@ -1,15 +1,16 @@
 package org.mediawiki.api.json;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * Fluent interface to easily build up an API request from params.
  */
 public class RequestBuilder {
     /**
-     * Hashmap used to hold the parameters with which to make the API call.
+     * LinkedHashMap used to hold the parameters with which to make the API call.
      */
-    private final HashMap<String, String> params;
+    private final LinkedHashMap<String, String> params;
 
     /**
      * Api object with which the request being built is associated.
@@ -24,16 +25,16 @@ public class RequestBuilder {
      */
     RequestBuilder(final Api apiToUse, final String action) {
         this.api = apiToUse;
-        params = new HashMap<String, String>();
+        params = new LinkedHashMap<String, String>(14, .8f, false);
+        params.put("action", action); // put action first to match robots.txt whitelist of action=mobileview for app search indexing
         params.put("format", "json"); // Force everything to be JSON
-        params.put("action", action);
     }
 
     /**
-     * @return A copy of the curent set of parameters for this request
+     * @return A copy of the current set of parameters for this request
      */
-    public HashMap<String, String> getParams() {
-        return new HashMap<String, String>(params);
+    public Map<String, String> getParams() {
+        return new LinkedHashMap<String, String>(params);
     }
 
     /**

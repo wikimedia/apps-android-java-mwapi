@@ -133,7 +133,7 @@ public class Api {
             apiUrl = new URL(protocol, domain, endpointPath);
         } catch (MalformedURLException e) {
             // This never actually is supposed to happen, since it is thrown only
-            // when an unknown protocal is given. http and https are guaranteed to be present,
+            // when an unknown protocol is given. http and https are guaranteed to be present,
             // according to http://docs.oracle.com/javase/6/docs/json/java/net/URL.html#URL(java.lang.String, java.lang.String, int, java.lang.String)
             throw new RuntimeException(e);
         }
@@ -193,7 +193,7 @@ public class Api {
         return new ApiResult(request);
     }
 
-    private HashMap<String, String> encodeParams(HashMap<String, String> params) {
+    private Map<String, String> encodeParams(Map<String, String> params) {
         for (Map.Entry<String, String> entry: params.entrySet()) {
             try {
                 entry.setValue(URLEncoder.encode(entry.getValue(), "utf-8"));

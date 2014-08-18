@@ -5,7 +5,7 @@ import org.junit.Test;
 import java.util.Iterator;
 import java.util.Map;
 
-import static junit.framework.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Tests that work on the RequestBuilder level.

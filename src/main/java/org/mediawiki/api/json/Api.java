@@ -176,19 +176,20 @@ public class Api {
         switch(method) {
             case METHOD_GET:
                 request = HttpRequest.get(getApiUrl().toString(), encodeParams(requestBuilder.getParams()), false);
-                if (this.customHeaders != null) {
-                    request = request.headers(customHeaders);
-                }
                 break;
             case METHOD_POST:
                 request = HttpRequest.post(getApiUrl().toString());
-                if (this.customHeaders != null) {
-                    request = request.headers(customHeaders);
-                }
-                request.form(requestBuilder.getParams());
                 break;
             default:
                 throw new IllegalArgumentException("Unknown argument passed for parameter method");
+        }
+        request.acceptGzipEncoding();
+        request.uncompress(true);
+        if (this.customHeaders != null) {
+            request = request.headers(customHeaders);
+        }
+        if (method == METHOD_POST) {
+            request.form(requestBuilder.getParams());
         }
         return new ApiResult(request);
     }

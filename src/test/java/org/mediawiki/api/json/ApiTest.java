@@ -28,7 +28,7 @@ public class ApiTest {
                 .param("lgname", testUsername)
                 .param("lgpassword", testPassword)
                 .post().asObject();
-        assertEquals(resp.optJSONObject("login").optString("result"), "NeedToken");
+        assertEquals("NeedToken", resp.optJSONObject("login").optString("result"));
         assertNull(resp.optJSONObject("error"));
     }
 
@@ -38,7 +38,7 @@ public class ApiTest {
         JSONObject resp = api.action("login")
                 .get().asObject();
 
-        assertEquals(resp.optJSONObject("error").optString("code"), "mustbeposted");
+        assertEquals("mustbeposted", resp.optJSONObject("error").optString("code"));
     }
 
     @Test
@@ -51,7 +51,7 @@ public class ApiTest {
                 .param("text", inputText)
                 .param("prop", "wikitext")
                 .get().asObject();
-        assertEquals(resp.optJSONObject("parse").optJSONObject("wikitext").optString("*"), inputText);
+        assertEquals(inputText, resp.optJSONObject("parse").optJSONObject("wikitext").optString("*"));
     }
 
     /**
@@ -69,8 +69,10 @@ public class ApiTest {
                 .param("sectionprop", "toclevel|line|anchor")
                 .param("noheadings", "true")
                 .get().asObject();
-        assertEquals(resp.optJSONObject("mobileview").optJSONArray("sections").getJSONObject(0).optString("text"),
-                "<p>Testing a page with &amp; in the title</p>");
+        assertEquals(
+                "<p>Testing a page with &amp; in the title</p>",
+                resp.optJSONObject("mobileview").optJSONArray("sections").getJSONObject(0).optString("text")
+        );
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -91,12 +93,12 @@ public class ApiTest {
     public void testJSONException() {
         Api api = getApi();
         try {
-            api.action("somethingdoesnmtatter").param("format", "xml").get().asObject();
+            api.action("somethingdoesntmatter").param("format", "xml").get().asObject();
         } catch (ApiException e) {
             assertTrue(e.getCause() instanceof JSONException);
             return;
         }
-        assertTrue("This means no exception was thrown, and hence test fails", false);
+        fail("This means no exception was thrown, and hence test fails");
     }
 
     /**
@@ -110,12 +112,12 @@ public class ApiTest {
     public void testNetworkException() {
         Api api = new Api("blashblahblahdoesnotexist", "java-mwapi-UA");
         try {
-            api.action("somethingdoesnmtatter").param("format", "xml").get().asObject();
+            api.action("somethingdoesntmatter").param("format", "xml").get().asObject();
         } catch (ApiException e) {
             assertTrue(e.getCause() instanceof IOException);
             return;
         }
-        assertTrue("This means no exception was thrown, and hence test fails", false);
+        fail("This means no exception was thrown, and hence test fails");
     }
 
     /**
@@ -159,7 +161,7 @@ public class ApiTest {
     }
 
     /**
-     * 
+     *
      * @return API with test-friendly construction
      */
     public Api getApi() {

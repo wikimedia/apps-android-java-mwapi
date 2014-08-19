@@ -13,45 +13,45 @@ public class ApiConstructionTest {
     @Test
     public void testSecure() throws Exception {
         assertEquals(
-                new Api("test.wikipedia.org", true).getApiUrl().toString(),
-                "https://test.wikipedia.org/w/api.php"
+                "https://test.wikipedia.org/w/api.php",
+                new Api("test.wikipedia.org", true).getApiUrl().toString()
         );
         assertEquals(
-                new Api("test.wikipedia.org", false).getApiUrl().toString(),
-                "http://test.wikipedia.org/w/api.php"
+                "http://test.wikipedia.org/w/api.php",
+                new Api("test.wikipedia.org", false).getApiUrl().toString()
         );
     }
     @Test
     public void testFull() throws Exception {
         assertEquals(
-                new Api("test.wikipedia.org", true, "/api.php").getApiUrl().toString(),
-                "https://test.wikipedia.org/api.php"
+                "https://test.wikipedia.org/api.php",
+                new Api("test.wikipedia.org", true, "/api.php").getApiUrl().toString()
         );
         assertEquals(
-                new Api("test.wikipedia.org", "java-mwapi-UA").getApiUrl().toString(),
-                "https://test.wikipedia.org/w/api.php"
+                "https://test.wikipedia.org/w/api.php",
+                new Api("test.wikipedia.org", "java-mwapi-UA").getApiUrl().toString()
         );
         HashMap<String,String> additionalHeaders = new java.util.HashMap<String,String>();
         additionalHeaders.put("X-Java-Mwapi-UnitTest", "java-mwapi-UA");
         assertEquals(
-                new Api("test.wikipedia.org", additionalHeaders).getApiUrl().toString(),
-                "https://test.wikipedia.org/w/api.php"
+                "https://test.wikipedia.org/w/api.php",
+                new Api("test.wikipedia.org", additionalHeaders).getApiUrl().toString()
         );
         assertEquals(
-                new Api("test.wikipedia.org", "java-mwapi-UA", additionalHeaders).getApiUrl().toString(),
-                "https://test.wikipedia.org/w/api.php"
+                "https://test.wikipedia.org/w/api.php",
+                new Api("test.wikipedia.org", "java-mwapi-UA", additionalHeaders).getApiUrl().toString()
         );
         assertEquals(
-                new Api("test.wikipedia.org", false, "/api.php").getApiUrl().toString(),
-                "http://test.wikipedia.org/api.php"
+                "http://test.wikipedia.org/api.php",
+                new Api("test.wikipedia.org", false, "/api.php").getApiUrl().toString()
         );
     }
 
     @Test
     public void testBasic() throws Exception {
         assertEquals(
-                new Api("test.wikipedia.org").getApiUrl().toString(),
-                "https://test.wikipedia.org/w/api.php"
-                );
+                "https://test.wikipedia.org/w/api.php",
+                new Api("test.wikipedia.org").getApiUrl().toString()
+        );
     }
 }

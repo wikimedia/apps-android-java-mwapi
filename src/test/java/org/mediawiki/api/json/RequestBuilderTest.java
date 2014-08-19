@@ -17,7 +17,7 @@ public class RequestBuilderTest {
     public void testActionIsFirstParam() throws Exception {
         RequestBuilder requestBuilder = new RequestBuilder(new Api("test.wikipedia.org"), "foo");
         final Iterator<Map.Entry<String, String>> entryIterator = requestBuilder.getParams().entrySet().iterator();
-        assertEquals(entryIterator.next().getKey(), "action");
-        assertEquals(entryIterator.next().getKey(), "format");
+        assertEquals("action", entryIterator.next().getKey());
+        assertEquals("format", entryIterator.next().getKey());
     }
 }

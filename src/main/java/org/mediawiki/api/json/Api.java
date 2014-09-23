@@ -191,7 +191,7 @@ public class Api {
         if (method == METHOD_POST) {
             request.form(requestBuilder.getParams());
         }
-        return new ApiResult(request);
+        return new ApiResult(this, request);
     }
 
     private Map<String, String> encodeParams(Map<String, String> params) {
@@ -212,6 +212,19 @@ public class Api {
      */
     public static void setConnectionFactory(HttpRequest.ConnectionFactory factory) {
         HttpRequest.setConnectionFactory(factory);
+    }
+
+    private OnHeaderCheckListener onHeaderCheckListener;
+
+    public void setHeaderCheckListener(OnHeaderCheckListener listener) {
+        onHeaderCheckListener = listener;
+    }
+
+    public void processHeaders(ApiResult result) {
+        if (onHeaderCheckListener != null) {
+            //give our listener a chance to look at the headers that we got back...
+            onHeaderCheckListener.onHeaderCheck(result);
+        }
     }
 }
 

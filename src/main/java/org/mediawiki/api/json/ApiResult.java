@@ -19,6 +19,7 @@ public class ApiResult {
      * Request for which this object holds the results.
      */
     private final HttpRequest request;
+    private final Api api;
     private Map<String, List<String>> headers;
 
     /**
@@ -26,7 +27,8 @@ public class ApiResult {
      *
      * @param request {@link HttpRequest} object which can perform the query for which this object holds the results.
      */
-    ApiResult(final HttpRequest request) {
+    ApiResult(final Api api, final HttpRequest request) {
+        this.api = api;
         this.request = request;
     }
 
@@ -86,6 +88,7 @@ public class ApiResult {
     private void extractResponseHeaders() {
         try {
             headers = request.headers();
+            api.processHeaders(this);
         } catch (HttpRequest.HttpRequestException e) {
             throw e;
         }

@@ -37,91 +37,100 @@ public class Api {
     private HashMap<String,String> customHeaders;
 
     /**
-     * Create an Api class with the default endpoint path.
+     * Default API endpoint
+     */
+    private static final String DEFAULT_ENDPOINT = "/w/api.php";
+
+    /**
+     * Create an Api object with given only hostname.
      *
-     * Uses https by default (isSecure is true).
-     * Default endpoint path is /w/json.php.
+     * Defaults to HTTPS
+     * No custom headers to send with each request
+     * Default endpoint (DEFAULT_ENDPOINT) will be used.
      *
-     * @param domain Domain name of the server with the wiki to connect to
+     * @param domain Domain name of the MediaWiki API to connect to
      */
     public Api(final String domain) {
-        this(domain, true);
+        this(domain, true, DEFAULT_ENDPOINT, null);
     }
 
     /**
-     * Create an Api class with the default endpoint path using custom User-Agent.
+     * Create an Api object with given only hostname and user agent.
      *
-     * Uses https by default (isSecure is true).
-     * Default endpoint path is /w/json.php.
+     * Defaults to HTTPS
+     * Default endpoint (DEFAULT_ENDPOINT) will be used
      *
-     * @param domain Domain name of the server with the wiki to connect to
+     * @param domain Domain name of the MediaWiki API to connect to
      * @param userAgent Custom User-Agent to simplify identification of consuming application
      */
     public Api(final String domain, final String userAgent) {
-        this(domain, true);
-        if (userAgent != null) {
-            this.customHeaders = new HashMap<String,String>();
-            this.customHeaders.put("User-Agent", userAgent);
-        }
+        this(domain, true, DEFAULT_ENDPOINT, new HashMap<String, String>());
+        this.customHeaders.put("User-Agent", userAgent);
     }
 
     /**
-     * Create an Api class with the default endpoint path using custom User-Agent
-     * and additional headers.
+     * Create an Api object with given only hostname, custom headers, and user agent.
      *
-     * Uses https by default (isSecure is true).
-     * Default endpoint path is /w/json.php.
-     * If User-Agent key is set in customHeaders it will override the userAgent parameter.
+     * Defaults to HTTPS
+     * Default endpoint (DEFAULT_ENDPOINT) will be used
      *
-     * @param domain Domain name of the server with the wiki to connect to
+     * @param domain Domain name of the MediaWiki API to connect to
      * @param userAgent Custom User-Agent to simplify identification of consuming application
-     * @param customHeaders Additional custom headers to enrich request
+     * @param customHeaders Any extra headers to send with each request, e.g. User-Agent.
      */
     public Api(final String domain, final String userAgent, HashMap<String,String> customHeaders) {
-        this(domain, userAgent);
-        if (customHeaders != null) {
-            if (this.customHeaders == null) {
-                this.customHeaders = customHeaders;
-            } else {
-                this.customHeaders.putAll(customHeaders);
-            }
-        }
+        this(domain, true, DEFAULT_ENDPOINT, customHeaders);
+        this.customHeaders.put("User-Agent", userAgent);
     }
 
     /**
-     * Create an Api class with the default endpoint path using custom headers.
+     * Create an Api object with given only hostname and custom headers.
      *
-     * Uses https by default (isSecure is true).
-     * Default endpoint path is /w/json.php.
+     * Defaults to HTTPS
+     * Default endpoint (DEFAULT_ENDPOINT) will be used
      *
-     * @param domain Domain name of the server with the wiki to connect to
-     * @param customHeaders Additional custom headers to enrich request
+     * @param domain Domain name of the MediaWiki API to connect to
+     * @param customHeaders Any extra headers to send with each request, e.g. User-Agent.
      */
     public Api(final String domain, HashMap<String,String> customHeaders) {
-        this(domain, true);
-        if (customHeaders != null) {
-            this.customHeaders = customHeaders;
-        }
+        this(domain, true, DEFAULT_ENDPOINT, customHeaders);
     }
 
     /**
-     * Create an Api class with the default endpoint path.
+     * Create an Api object with given only hostname and whether to use HTTPS or not.
      *
-     * @param domain Domain name of the mediawiki installation to connect to
+     * No custom headers to send with each request
+     * Default endpoint (DEFAULT_ENDPOINT) will be used
+     *
+     * @param domain Domain name of the MediaWiki API to connect to
      * @param useSecure true to use https, false to use http
      */
     public Api(final String domain, final boolean useSecure) {
-        this(domain, useSecure, "/w/api.php");
+        this(domain, useSecure, DEFAULT_ENDPOINT, null);
     }
 
     /**
-     * Create an Api class with given hostname and endpoint path.
+     * Create an Api object with given only hostname, whether to use HTTPS or not, and endpoint path.
      *
-     * @param domain Domain name of the mediawiki installation to connect to
+     * No custom headers to send with each request
+     *
+     * @param domain Domain name of the MediaWiki API to connect to
      * @param useSecure true to use https, false to use http
-     * @param endpointPath Path to the json.php file. Require preceding slash.
+     * @param endpointPath Path to the api.php file. Require preceding slash.
      */
     public Api(final String domain, final boolean useSecure, final String endpointPath) {
+        this(domain, useSecure, endpointPath, null);
+    }
+
+    /**
+     * Create an Api object
+     *
+     * @param domain Domain name of the MediaWiki API to connect to
+     * @param useSecure true to use https, false to use http
+     * @param endpointPath Path to the api.php file. Require preceding slash.
+     * @param customHeaders Any extra headers to send with each request, e.g. User-Agent.
+     */
+    public Api(final String domain, final boolean useSecure, final String endpointPath, HashMap<String,String> customHeaders) {
         String protocol;
         if (useSecure) {
             protocol = "https";
@@ -133,10 +142,11 @@ public class Api {
             apiUrl = new URL(protocol, domain, endpointPath);
         } catch (MalformedURLException e) {
             // This never actually is supposed to happen, since it is thrown only
-            // when an unknown protocol is given. http and https are guaranteed to be present,
+            // when an unknown protocol is given. 'http' or 'https' are guaranteed to be present,
             // according to http://docs.oracle.com/javase/6/docs/json/java/net/URL.html#URL(java.lang.String, java.lang.String, int, java.lang.String)
             throw new RuntimeException(e);
         }
+        this.customHeaders = customHeaders;
     }
 
     /**

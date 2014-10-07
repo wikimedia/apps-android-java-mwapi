@@ -60,6 +60,8 @@ public class ApiResult {
             throw new ApiException(e);
         } catch (HttpRequest.HttpRequestException e) {
             throw new ApiException(e.getCause());
+        } catch (SecurityException e) {
+            throw new ApiException(e);
         }
     }
 
@@ -82,17 +84,14 @@ public class ApiResult {
             throw new ApiException(e);
         } catch (HttpRequest.HttpRequestException e) {
             throw new ApiException(e.getCause());
+        } catch (SecurityException e) {
+            throw new ApiException(e);
         }
     }
 
     private void extractResponseHeaders() {
-        try {
-            headers = request.headers();
-            api.processHeaders(this);
-        } catch (HttpRequest.HttpRequestException e) {
-            throw e;
-        }
-
+        headers = request.headers();
+        api.processHeaders(this);
     }
 
     /**

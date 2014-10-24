@@ -223,7 +223,7 @@ public class Api {
     public void processHeaders(ApiResult result) {
         if (onHeaderCheckListener != null) {
             //give our listener a chance to look at the headers that we got back...
-            onHeaderCheckListener.onHeaderCheck(result);
+            onHeaderCheckListener.onHeaderCheck(result, apiUrl);
         }
     }
 }

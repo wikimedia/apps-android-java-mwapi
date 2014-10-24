@@ -102,7 +102,7 @@ public class ApiResult {
      */
     public Map<String, List<String>> getHeaders() throws NullPointerException {
         if (headers != null) {
-                return headers;
+            return headers;
         }
         throw new NullPointerException("getHeaders must be called after asArray or asObject");
     }

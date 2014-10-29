@@ -172,16 +172,19 @@ public class Api {
     /**
      * Sets up the HTTP request that needs to be made to produce results for this API query.
      *
-     * Use {@link org.mediawiki.api.json.ApiResult#asArray()} or {@link org.mediawiki.api.json.ApiResult#asObject()} to
-     * actually start the network request and get the response.
+     * Use {@link org.mediawiki.api.json.ApiResult#asArray()} or
+     * {@link org.mediawiki.api.json.ApiResult#asObject()} to get the response.
      *
-     * Supports GET and POST only currently, since that is all that the MW API supports.
+     * In the case of a GET request, the actual network transaction will only occur when you query
+     * the returned {@link ApiResult} object. However, for a POST request, the network transaction
+     * will occur immediately in this function, hence the possibility of an {@link ApiException}
      *
      * @param method HTTP method to use when performing the request
      * @param requestBuilder The requestBuilder to use to construct the request
      * @return An {@link ApiResult} object which can be used to get the result of this query.
+     * @throws ApiException Thrown in the case of a network error.
      */
-    public ApiResult setupRequest(final int method, final RequestBuilder requestBuilder) {
+    public ApiResult setupRequest(final int method, final RequestBuilder requestBuilder) throws ApiException {
         HttpRequest request;
         switch(method) {
             case METHOD_GET:
@@ -199,7 +202,15 @@ public class Api {
             request = request.headers(customHeaders);
         }
         if (method == METHOD_POST) {
-            request.form(requestBuilder.getParams());
+            // catch network-related exceptions, since the form() function performs a
+            // network request.
+            try {
+                request.form(requestBuilder.getParams());
+            } catch (HttpRequest.HttpRequestException e) {
+                throw new ApiException(e.getCause());
+            } catch (SecurityException e) {
+                throw new ApiException(e);
+            }
         }
         return new ApiResult(this, request);
     }

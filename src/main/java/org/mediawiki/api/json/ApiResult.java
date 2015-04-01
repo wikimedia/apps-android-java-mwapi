@@ -47,7 +47,7 @@ public class ApiResult {
      * Use this when a JSON Array is returned by the API. So far, only action=opensearch.
      *
      * @return A {@link JSONArray} object with the results of the API query.
-     * @throws ApiException Thrown in the case of a network error, or if the response is not a JSON Array.
+     * @throws ApiException Thrown in the case of any error(s). Check the inner exception for details.
      */
     public JSONArray asArray() throws ApiException {
         try {
@@ -56,11 +56,9 @@ public class ApiResult {
                 resultArray = new JSONArray(request.body());
             }
             return resultArray;
-        } catch (JSONException e) {
-            throw new ApiException(e);
         } catch (HttpRequest.HttpRequestException e) {
             throw new ApiException(e.getCause());
-        } catch (SecurityException e) {
+        } catch (Exception e) {
             throw new ApiException(e);
         }
     }
@@ -71,7 +69,7 @@ public class ApiResult {
      * Locally cache the result too, so multiple calls to this method will succeeed.
      *
      * @return A {@link JSONObject} object with the results of the API query.
-     * @throws ApiException Thrown in the case of a network error, or if the response is not a JSON Object.
+     * @throws ApiException Thrown in the case of any error(s). Check the inner exception for details.
      */
     public JSONObject asObject() throws ApiException {
         try {
@@ -80,11 +78,9 @@ public class ApiResult {
                 resultObject = new JSONObject(request.body());
             }
             return resultObject;
-        } catch (JSONException e) {
-            throw new ApiException(e);
         } catch (HttpRequest.HttpRequestException e) {
             throw new ApiException(e.getCause());
-        } catch (SecurityException e) {
+        } catch (Exception e) {
             throw new ApiException(e);
         }
     }

@@ -53,11 +53,14 @@ public class ApiResult {
         try {
             if (resultArray == null) {
                 extractResponseHeaders();
+                assertSuccess();
                 resultArray = new JSONArray(request.body());
             }
             return resultArray;
         } catch (HttpRequest.HttpRequestException e) {
             throw new ApiException(e.getCause());
+        } catch (ApiException e) {
+            throw e;
         } catch (Exception e) {
             throw new ApiException(e);
         }
@@ -75,11 +78,14 @@ public class ApiResult {
         try {
             if (resultObject == null) {
                 extractResponseHeaders();
+                assertSuccess();
                 resultObject = new JSONObject(request.body());
             }
             return resultObject;
         } catch (HttpRequest.HttpRequestException e) {
             throw new ApiException(e.getCause());
+        } catch (ApiException e) {
+            throw e;
         } catch (Exception e) {
             throw new ApiException(e);
         }
@@ -88,6 +94,24 @@ public class ApiResult {
     private void extractResponseHeaders() {
         headers = request.headers();
         api.processHeaders(this);
+    }
+
+    private void assertSuccess() throws JSONException, ApiException {
+        // check the http status code
+        if (!request.ok()) {
+            throw new ApiException(Integer.toString(request.code()), request.message());
+        }
+        // check for a header that indicates an error...
+        final String apiErrorKey = "MediaWiki-API-Error";
+        if (headers.containsKey(apiErrorKey)) {
+            // unwrap the json response, and build an exception out of it.
+            JSONObject error = (new JSONObject(request.body())).optJSONObject("error");
+            if (error != null) {
+                throw new ApiException(error.optString("code"), error.optString("info"));
+            }
+            // if the json response was malformed, then just use the code in the http header.
+            throw new ApiException(headers.get(apiErrorKey).get(0), "");
+        }
     }
 
     /**

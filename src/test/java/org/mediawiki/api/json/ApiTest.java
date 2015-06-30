@@ -34,11 +34,13 @@ public class ApiTest {
 
     @Test
     public void testWrongMethod() throws Exception {
-        Api api = getApi();
-        JSONObject resp = api.action("login")
-                .get().asObject();
-
-        assertEquals("mustbeposted", resp.optJSONObject("error").optString("code"));
+        try {
+            getApi().action("login").get().asObject();
+            // shouldn't reach this point:
+            fail("Expected ApiException wasn't thrown.");
+        } catch (ApiException e) {
+            assertEquals("mustbeposted", e.getCode());
+        }
     }
 
     @Test

@@ -1,0 +1,24 @@
+apply plugin: 'nexus'
+
+modifyPom {
+    project {
+        name 'json'
+        description 'MediaWiki JSON API Java bindings.'
+        url 'https://git.wikimedia.org/blob/apps%2Fandroid%2Fjava-mwapi.git/master/README.md'
+        inceptionYear '2013'
+
+        scm {
+            url 'https://git.wikimedia.org/blob/apps%2Fandroid%2Fjava-mwapi.git/master/README.md'
+            connection 'scm:git:https://gerrit.wikimedia.org/r/apps/android/java-mwapi'
+            developerConnection 'scm:git:https://gerrit.wikimedia.org/r/apps/android/java-mwapi'
+        }
+
+        licenses {
+            license {
+                name 'The Apache Software License, Version 2.0'
+                url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                distribution 'repo'
+            }
+        }
+    }
+}

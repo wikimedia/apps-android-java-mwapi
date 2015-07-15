@@ -31,11 +31,8 @@
 
     <!-- Checks that a package-info.java file exists for each package.     -->
     <!-- See http://checkstyle.sf.net/config_javadoc.html#JavadocPackage -->
-    <module name="JavadocPackage"/>
+    <!--<module name="JavadocPackage"/>-->
 
-    <!-- Checks that property files contain the same keys.         -->
-    <!-- See http://checkstyle.sf.net/config_misc.html#Translation -->
-    <module name="Translation"/>
 
     <!-- Checks for whitespace                               -->
     <!-- See http://checkstyle.sf.net/config_whitespace.html -->
@@ -50,14 +47,21 @@
        <property name="message" value="Line has trailing spaces."/>
     </module>
 
+    <module name="SuppressionFilter">
+        <property name="file" value="config/suppressions.xml"/>
+    </module>
+
+    <!-- Filter out Checkstyle warnings that have been suppressed with the @SuppressWarnings annotation -->
+    <module name="SuppressWarningsFilter" />
+
     <module name="TreeWalker">
 
         <!-- Checks for Javadoc comments.                     -->
         <!-- See http://checkstyle.sf.net/config_javadoc.html -->
-        <module name="JavadocMethod"/>
-        <module name="JavadocType"/>
-        <module name="JavadocVariable"/>
-        <module name="JavadocStyle"/>
+        <!--<module name="JavadocMethod"/>-->
+        <!--<module name="JavadocType"/>-->
+        <!--<module name="JavadocVariable"/>-->
+        <!--<module name="JavadocStyle"/>-->
 
 
         <!-- Checks for Naming Conventions.                  -->
@@ -69,7 +73,9 @@
         <module name="MethodName"/>
         <module name="PackageName"/>
         <module name="ParameterName"/>
-        <module name="StaticVariableName"/>
+        <module name="StaticVariableName">
+            <property name="format" value="^[A-Z0-9_]*$" />
+        </module>
         <module name="TypeName"/>
 
         <!-- Checks for imports                              -->
@@ -95,8 +101,13 @@
         <module name="OperatorWrap"/>
         <module name="ParenPad"/>
         <module name="TypecastParenPad"/>
-        <module name="WhitespaceAfter"/>
-        <module name="WhitespaceAround"/>
+        <module name="WhitespaceAfter">
+            <property name="tokens" value="COMMA, SEMI" /> <!-- No whitespace after typecasts -->
+        </module>
+        <module name="WhitespaceAround">
+            <property name="tokens"
+                value="ASSIGN, BAND, BAND_ASSIGN, BOR, BOR_ASSIGN, BSR, BSR_ASSIGN, BXOR, BXOR_ASSIGN, COLON, DIV, DIV_ASSIGN, EQUAL, GE, GT, LAND, LE, LITERAL_CATCH, LITERAL_DO, LITERAL_ELSE, LITERAL_FINALLY, LITERAL_FOR, LITERAL_IF, LITERAL_RETURN, LITERAL_SYNCHRONIZED, LITERAL_TRY, LITERAL_WHILE, LOR, LT, MINUS, MINUS_ASSIGN, MOD, MOD_ASSIGN, NOT_EQUAL, PLUS, PLUS_ASSIGN, QUESTION, SL, SLIST, SL_ASSIGN, SR, SR_ASSIGN, STAR, STAR_ASSIGN, TYPE_EXTENSION_AND "/>
+        </module>
 
 
         <!-- Modifier Checks                                    -->
@@ -108,7 +119,9 @@
         <!-- Checks for blocks. You know, those {}'s         -->
         <!-- See http://checkstyle.sf.net/config_blocks.html -->
         <module name="AvoidNestedBlocks"/>
-        <module name="EmptyBlock"/>
+        <module name="EmptyBlock">
+            <property name="option" value="text"/>
+        </module>
         <module name="LeftCurly"/>
         <module name="NeedBraces"/>
         <module name="RightCurly"/>
@@ -116,15 +129,36 @@
 
         <!-- Checks for common coding problems               -->
         <!-- See http://checkstyle.sf.net/config_coding.html -->
-        <module name="AvoidInlineConditionals"/>
+        <!--<module name="AvoidInlineConditionals"/> Inline conditionals are fine!-->
         <module name="EmptyStatement"/>
         <module name="EqualsHashCode"/>
-        <module name="HiddenField"/>
+        <module name="HiddenField">
+            <property name="tokens" value="VARIABLE_DEF"/>
+            <property name="ignoreSetter" value="true"/>
+            <property name="ignoreConstructorParameter" value="true"/>
+        </module>
         <module name="IllegalInstantiation"/>
         <module name="InnerAssignment"/>
-        <module name="MagicNumber"/>
+        <module name="MagicNumber">
+            <!-- 0 is commonly used in length checks. 2 is used to make half.
+                 Typing ZERO and TWO sounds stupid -->
+            <property name="ignoreNumbers" value="-1, 0, 1, 2"/>
+            <property name="ignoreHashCodeMethod" value="true"/>
+            <property name="ignoreAnnotation" value="true"/>
+        </module>
         <module name="MissingSwitchDefault"/>
-        <module name="RedundantThrows"/>
+
+        <!-- For the Gradle checkstyle task. I kept getting something like this:-->
+        <!--<file name=".../android-wikipedia/wikipedia/src/main/java/org/wikipedia/Utils.java">-->
+            <!--<error line="515" column="71" severity="error" message="Unable to get class information for JSONException." source="com.puppycrawl.tools.checkstyle.checks.coding.RedundantThrowsCheck"/>-->
+        <!--</file>-->
+        <!-- Ideally, we would get the Exception classes included in the checkstyle specific classpath. -->
+        <module name="RedundantThrows">
+            <property name="allowUnchecked" value="true"/>
+            <property name="allowSubclasses" value="true"/>
+            <property name="suppressLoadErrors" value="true"/>
+        </module>
+
         <module name="SimplifyBooleanExpression"/>
         <module name="SimplifyBooleanReturn"/>
 
@@ -139,8 +173,11 @@
         <!-- Miscellaneous other checks.                   -->
         <!-- See http://checkstyle.sf.net/config_misc.html -->
         <module name="ArrayTypeStyle"/>
-        <module name="FinalParameters"/>
+        <!--<module name="FinalParameters"/>-->
         <module name="UpperEll"/>
+
+        <!-- Make the @SuppressWarnings annotations available to Checkstyle -->
+        <module name="SuppressWarningsHolder" />
 
     </module>
 

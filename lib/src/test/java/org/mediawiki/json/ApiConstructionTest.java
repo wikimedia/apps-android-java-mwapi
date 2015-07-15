@@ -31,7 +31,7 @@ public class ApiConstructionTest {
                 "https://test.wikipedia.org/w/api.php",
                 new Api("test.wikipedia.org", "java-mwapi-UA").getApiUrl().toString()
         );
-        HashMap<String,String> additionalHeaders = new java.util.HashMap<String,String>();
+        HashMap<String, String> additionalHeaders = new java.util.HashMap<>();
         additionalHeaders.put("X-Java-Mwapi-UnitTest", "java-mwapi-UA");
         assertEquals(
                 "https://test.wikipedia.org/w/api.php",

@@ -7,6 +7,9 @@ import java.util.Map;
  * Fluent interface to easily build up an API request from params.
  */
 public class RequestBuilder {
+    private static final int INITIAL_CAPACITY = 14;
+    private static final float LOAD_FACTOR = .8f;
+
     /**
      * LinkedHashMap used to hold the parameters with which to make the API call.
      */
@@ -25,7 +28,7 @@ public class RequestBuilder {
      */
     RequestBuilder(final Api apiToUse, final String action) {
         this.api = apiToUse;
-        params = new LinkedHashMap<String, String>(14, .8f, false);
+        params = new LinkedHashMap<String, String>(INITIAL_CAPACITY, LOAD_FACTOR, false);
         params.put("action", action); // put action first to match robots.txt whitelist of action=mobileview for app search indexing
         params.put("format", "json"); // Force everything to be JSON
     }

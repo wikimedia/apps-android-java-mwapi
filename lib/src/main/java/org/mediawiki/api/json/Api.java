@@ -34,7 +34,7 @@ public class Api {
     /**
      * Any custom headers, if specified by the appropriate constructor
      */
-    private HashMap<String,String> customHeaders;
+    private HashMap<String, String> customHeaders;
 
     /**
      * Default API endpoint
@@ -78,7 +78,7 @@ public class Api {
      * @param userAgent Custom User-Agent to simplify identification of consuming application
      * @param customHeaders Any extra headers to send with each request, e.g. User-Agent.
      */
-    public Api(final String domain, final String userAgent, HashMap<String,String> customHeaders) {
+    public Api(final String domain, final String userAgent, HashMap<String, String> customHeaders) {
         this(domain, true, DEFAULT_ENDPOINT, customHeaders);
         this.customHeaders.put("User-Agent", userAgent);
     }
@@ -92,7 +92,7 @@ public class Api {
      * @param domain Domain name of the MediaWiki API to connect to
      * @param customHeaders Any extra headers to send with each request, e.g. User-Agent.
      */
-    public Api(final String domain, HashMap<String,String> customHeaders) {
+    public Api(final String domain, HashMap<String, String> customHeaders) {
         this(domain, true, DEFAULT_ENDPOINT, customHeaders);
     }
 
@@ -130,7 +130,7 @@ public class Api {
      * @param endpointPath Path to the api.php file. Require preceding slash.
      * @param customHeaders Any extra headers to send with each request, e.g. User-Agent.
      */
-    public Api(final String domain, final boolean useSecure, final String endpointPath, HashMap<String,String> customHeaders) {
+    public Api(final String domain, final boolean useSecure, final String endpointPath, HashMap<String, String> customHeaders) {
         String protocol;
         if (useSecure) {
             protocol = "https";

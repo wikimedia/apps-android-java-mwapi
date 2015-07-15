@@ -2,6 +2,7 @@ package org.mediawiki.api.json;
 
 import static org.junit.Assert.*;
 
+import java.net.HttpURLConnection;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.List;
@@ -15,7 +16,6 @@ import java.io.IOException;
  * Tests that actually hit the API to return something.
  */
 public class ApiTest {
-
     @Test
     public void testBasicPost() throws Exception {
         Api api = getApi();
@@ -80,7 +80,7 @@ public class ApiTest {
     @Test(expected = IllegalArgumentException.class)
     public void testInvalidMethod() throws Exception {
         Api api = getApi();
-        api.setupRequest(404, null);
+        api.setupRequest(HttpURLConnection.HTTP_NOT_FOUND, null);
     }
 
     /**
@@ -149,7 +149,7 @@ public class ApiTest {
     /**
      * Test to verify that accessing headers before asObject throws.
      */
-    @Test(expected=NullPointerException.class)
+    @Test(expected = NullPointerException.class)
     public void testGetHeadersOutOfOrder() throws Exception {
         Api api = getApi();
         String inputText = "Test String";
@@ -167,7 +167,7 @@ public class ApiTest {
      * @return API with test-friendly construction
      */
     public Api getApi() {
-        HashMap<String,String> getApi = new HashMap<String,String>();
+        HashMap<String, String> getApi = new HashMap<>();
         getApi.put("X-Java-Mwapi-UnitTest", "java-mwapi-UA");
         return new Api("test.wikipedia.org", "java-mwapi-UA", getApi);
     }

@@ -20,5 +20,28 @@ modifyPom {
                 distribution 'repo'
             }
         }
+
+        developers {
+            developer {
+                id 'bsitzmann_wmf'
+                name 'Bernd Sitzmann'
+                email 'bernd@wikimedia.org'
+            }
+            developer {
+                id 'dmitrybrant'
+                name 'Dmitry Brant'
+                email 'dbrant@wikimedia.org'
+            }
+            developer {
+                id 'mholloway'
+                name 'Michael Holloway'
+                email 'mholloway@wikimedia.org'
+            }
+            developer {
+                id 'niedzielski'
+                name 'Stephen Niedzielski'
+                email 'stephen@niedzielski.com'
+            }
+        }
     }
 }

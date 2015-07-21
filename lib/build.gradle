@@ -1,10 +1,16 @@
+// Specify module plugins using new 2.1+ syntax to avoid modifying
+// projects depending on this module. Plugins must appear at the start of
+// the file.
+plugins {
+    id 'ch.netzwerg.release' version '1.1.0'
+}
+
 apply plugin: 'java'
 apply from: '../deploy.gradle'
 apply from: '../config/quality.gradle'
 
 group = 'org.mediawiki.api'
 archivesBaseName = 'json'
-version = '1.3.3-SNAPSHOT'
 
 dependencies {
     compile 'org.json:json:20140107'
@@ -20,4 +26,9 @@ if (JavaVersion.current() != JAVA_VERSION) {
 compileJava {
     sourceCompatibility = JAVA_VERSION
     targetCompatibility = JAVA_VERSION
+}
+
+release {
+    dependsOn = [uploadArchives]
+    tagPrefix = 'r/'
 }

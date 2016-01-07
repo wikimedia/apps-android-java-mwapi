@@ -167,7 +167,7 @@ public class ApiTest {
      * @return API with test-friendly construction
      */
     public Api getApi() {
-        HashMap<String, String> getApi = new HashMap<>();
+        Map<String, String> getApi = new HashMap<>();
         getApi.put("X-Java-Mwapi-UnitTest", "java-mwapi-UA");
         return new Api("test.wikipedia.org", "java-mwapi-UA", getApi);
     }

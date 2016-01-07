@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Tests for different ways to construct the Api object.
@@ -31,7 +32,7 @@ public class ApiConstructionTest {
                 "https://test.wikipedia.org/w/api.php",
                 new Api("test.wikipedia.org", "java-mwapi-UA").getApiUrl().toString()
         );
-        HashMap<String, String> additionalHeaders = new java.util.HashMap<>();
+        Map<String, String> additionalHeaders = new java.util.HashMap<>();
         additionalHeaders.put("X-Java-Mwapi-UnitTest", "java-mwapi-UA");
         assertEquals(
                 "https://test.wikipedia.org/w/api.php",

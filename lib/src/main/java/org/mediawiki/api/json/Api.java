@@ -96,6 +96,10 @@ public class Api {
         this(domain, true, DEFAULT_ENDPOINT, customHeaders);
     }
 
+    public Api(final String domain, boolean useSecure, Map<String, String> customHeaders) {
+        this(domain, useSecure, DEFAULT_ENDPOINT, customHeaders);
+    }
+
     /**
      * Create an Api object with given only hostname and whether to use HTTPS or not.
      *
@@ -248,4 +252,3 @@ public class Api {
         }
     }
 }
-

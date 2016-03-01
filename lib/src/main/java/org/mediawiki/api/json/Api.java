@@ -40,6 +40,8 @@ public class Api {
      * Default API endpoint
      */
     private static final String DEFAULT_ENDPOINT = "/w/api.php";
+    private static final int DEFAULT_HTTP_PORT = 80;
+    private static final int DEFAULT_HTTPS_PORT = 443;
 
     /**
      * Create an Api object with given only hostname.
@@ -126,15 +128,20 @@ public class Api {
         this(domain, useSecure, endpointPath, null);
     }
 
+    public Api(final String domain, final boolean useSecure, final String endpointPath, Map<String, String> customHeaders) {
+        this(domain, useSecure ? DEFAULT_HTTPS_PORT : DEFAULT_HTTP_PORT, useSecure, endpointPath, customHeaders);
+    }
+
     /**
      * Create an Api object
      *
      * @param domain Domain name of the MediaWiki API to connect to
+     * @param port URL port number.
      * @param useSecure true to use https, false to use http
      * @param endpointPath Path to the api.php file. Require preceding slash.
      * @param customHeaders Any extra headers to send with each request, e.g. User-Agent.
      */
-    public Api(final String domain, final boolean useSecure, final String endpointPath, Map<String, String> customHeaders) {
+    public Api(final String domain, int port, final boolean useSecure, final String endpointPath, Map<String, String> customHeaders) {
         String protocol;
         if (useSecure) {
             protocol = "https";
@@ -143,7 +150,11 @@ public class Api {
         }
 
         try {
-            apiUrl = new URL(protocol, domain, endpointPath);
+            if (useSecure && port != DEFAULT_HTTPS_PORT || !useSecure && port != DEFAULT_HTTP_PORT) {
+                apiUrl = new URL(protocol, domain, port, endpointPath);
+            } else {
+                apiUrl = new URL(protocol, domain, endpointPath);
+            }
         } catch (MalformedURLException e) {
             // This never actually is supposed to happen, since it is thrown only
             // when an unknown protocol is given. 'http' or 'https' are guaranteed to be present,
